@@ -11,15 +11,14 @@ class MovieController extends Controller
      *
      * Display a listing of the resource.
      */
+    /**
+     * Display a listing of the resource.
+     */
     public function index()
     {
-
-        
         //
-    }private function helperFunction()
-    {
-        // Helper function logic
     }
+
     /**
      * Store a newly created resource in storage.
      */
