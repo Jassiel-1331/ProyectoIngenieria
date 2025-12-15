@@ -4,31 +4,33 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 use App\Models\Usuario;
+use App\Services\AuthService;
+use App\Services\RegisterService;
 
 class UsuarioController extends Controller
 {
     // LOGIN
-    public function login(Request $request)
+    public function login(Request $request, AuthService $auth)
     {
         $request->validate([
             'correo' => 'required|email',
             'contrasena' => 'required'
         ]);
 
-        $user = Usuario::where('correo', $request->correo)->first();
-
-        if (!$user || !password_verify($request->contrasena, $user->contrasena_hash)) {
-            return response()->json(['message' => 'Credenciales inválidas'], 401);
+        $resultado = $auth->login(
+            $request->correo,
+            $request->contrasena
+        );
+        
+        if(!$resultado['success']){
+            return response()->json(['message' => $resultado['message']], 401);
         }
 
-        session(['user_id' => $user->id_usuario]);
-
         return response()->json([
-            'message' => 'Login exitoso',
-            'usuario' => $user
+            'message' => $resultado['message'],
+            'user' => $resultado['user']
         ], 200);
     }
-
 
     // LOGOUT
     public function logout(Request $request)
@@ -38,9 +40,8 @@ class UsuarioController extends Controller
         return response()->json(['message' => 'Logout exitoso'], 200);
     }
 
-
     // REGISTER
-    public function register(Request $request)
+    public function register(Request $request, RegisterService $registerService)
     {
         $request->validate([
             'nombre' => 'required|string|max:255',
@@ -48,19 +49,15 @@ class UsuarioController extends Controller
             'contrasena' => 'required|string|min:6'
         ]);
 
-        $hashed_password = password_hash($request->contrasena, PASSWORD_DEFAULT);
+        $resultado = $registerService->register($request);
 
-        $user = Usuario::create([
-            'nombre' => $request->nombre,
-            'correo' => $request->correo,
-            'contrasena_hash' => $hashed_password,
-            'rol' => 'usuario',
-            'fecha_registro' => now(),
-        ]);
+        if(!$resultado['success']){
+            return response()->json(['message' => $resultado['message']], 400);
+        }
 
         return response()->json([
-            'message' => 'Registro exitoso',
-            'usuario' => $user
+            'message' => $resultado['message'],
+            'usuario' => $resultado['usuario']
         ], 201);
     }
 }
