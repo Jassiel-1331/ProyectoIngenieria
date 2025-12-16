@@ -9,11 +9,15 @@ use App\Services\CacheMovieService;
 
 class MovieController extends Controller
 {
+
+
+   public const ERROR_CASE = 'No tienes permisos para esta acción';
+
     protected $cacheService;
 
     public function __construct(CacheMovieService $cacheService)
     {
-        $this->cacheService = $cacheService;
+        $this->cacheService  =$cacheService;
     }
 
     /**
@@ -97,7 +101,7 @@ class MovieController extends Controller
         // Verificar que sea admin
         if(!$this->esAdmin()) {
             return response()->json([
-                'message' => 'No tienes permisos para esta acción'
+                'message' => self::ERROR_CASE
             ], 403);
         }
 
@@ -131,7 +135,7 @@ class MovieController extends Controller
         // Verificar que sea admin
         if(!$this->esAdmin()) {
             return response()->json([
-                'message' => 'No tienes permisos para esta acción'
+                'message' => self::ERROR_CASE
             ], 403);
         }
 
@@ -153,12 +157,12 @@ class MovieController extends Controller
      * Reactivar película eliminada (ADMIN)
      * PATCH /api/movies/{id}/reactivar
      */
-    public function reactivar(Request $request, string $id)
+    public function reactivar(string $id)
     {
         // Verificar que sea admin
         if(!$this->esAdmin()) {
             return response()->json([
-                'message' => 'No tienes permisos para esta acción'
+                'message' => self::ERROR_CASE
             ], 403);
         }
 
@@ -181,7 +185,7 @@ class MovieController extends Controller
      */
     private function esAdmin() {
         $userId = session('user_id');
-        if(!$userId) return false;
+        if(!$userId){} return false;
         
         $usuario = \App\Models\Usuario::find($userId);
         return $usuario && $usuario->esAdmin();

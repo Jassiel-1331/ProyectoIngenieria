@@ -67,3 +67,4 @@ class Cache_tmdb extends Model{
         return round($calificaciones->avg('calificacion'), 1);
     }
 }
+?>
