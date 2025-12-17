@@ -96,7 +96,6 @@ class CacheMovieService {
     public function obtenerPorId($idTmdb) {
         return Cache_tmdb::find($idTmdb);
     }
-
     /**
      * Actualizar datos personalizados de película (overrides del admin)
      * @param int $idTmdb
@@ -110,19 +109,15 @@ class CacheMovieService {
             throw new \Exception('Película no encontrada en caché');
         }
 
-        $datosActualizar = [];
-        
-        if(isset($overrides['titulo'])) {
-            $datosActualizar['override_titulo'] = $overrides['titulo'];
-        }
-        if(isset($overrides['sinopsis'])) {
-            $datosActualizar['override_sinopsis'] = $overrides['sinopsis'];
-        }
-        if(isset($overrides['imagen'])) {
-            $datosActualizar['override_image'] = $overrides['imagen'];
-        }
+        $datosActualizar = [
+            'override_titulo' => $overrides['titulo'] ?? null,
+            'override_sinopsis' => $overrides['sinopsis'] ?? null,
+            'override_image'=> $overrides['imagen']?? null
+        ];
 
-        if(!empty($datosActualizar)) {
+        $datosActualizar = array_filter($datosActualizar , fn($v) => !is_null($v));
+
+        if($datosActualizar){
             $pelicula->update($datosActualizar);
         }
 
@@ -136,6 +131,21 @@ class CacheMovieService {
     public function limpiarInactivos() {
         return Cache_tmdb::where('estado', 'inactivo')->forceDelete();
     }
-}
+
+
+
+    public function getCacheSeries($series){
+            
+        return $series
+            ?['series cacheadas'=> $series] : 'Series no encontradas';
+
+        }}
+        return cache()->get(
+            'series',
+            'no se encontro ningun serie'
+        );
+    
+
+
 
 
