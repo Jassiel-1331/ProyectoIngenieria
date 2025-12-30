@@ -54,7 +54,7 @@
           │
           ▼
    ┌──────────────────────────────┐
-   │    BASE DE DATOS (MySQL)     │
+   │    BASE DE DATOS (sqLite)    │
    ├──────────────────────────────┤
    │ usuarios                     │
    │ cache_tmdb                   │

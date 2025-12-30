@@ -134,16 +134,12 @@ class CacheMovieService {
 
 
 
-    public function getCacheSeries($series){
-            
-        return $series
-            ?['series cacheadas'=> $series] : 'Series no encontradas';
-
-        }}
-        return cache()->get(
-            'series',
-            'no se encontro ningun serie'
-        );
+   public function getCacheSeries($series)
+{
+    return $series
+        ? ['series cacheadas' => $series]
+        : 'Series no encontradas';
+}
     
 
 
